@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <h2>Image #{{ picture.id }}</h2>
+  <img src="{{ url_for('send_image', picture_id=picture.id) }}" />
+{% endblock %}

@@ -2,9 +2,9 @@ from flask import Flask
 app = Flask(__name__)
 
 from pathlib import Path
-uploads = Path(__file__).resolve().parent.parent.joinpath("uploads")
-uploads.mkdir(exist_ok=True)
-app.config["UPLOAD_FOLDER"] = uploads
+data = Path(__file__).resolve().parent.parent.joinpath("data")
+data.mkdir(exist_ok=True)
+app.config["UPLOAD_DIRECTORY"] = data
 app.config["ALLOWED_EXTENSIONS"] = {"png", "jpg", "jpeg"}
 
 from flask_sqlalchemy import SQLAlchemy
