@@ -7,7 +7,11 @@
     </tr>
     {% for picture in pictures %}
     <tr>
-      <td><a href="{{ url_for('picture_show', picture_id=picture.id) }}">{{ picture.id }}</a></td>
+      <td>
+        <a href="{{ url_for('picture_show', picture_id=picture.id) }}">
+          <img src="{{ url_for('send_image', filename=picture.id|string + '.thumb') }}" />
+        </a>
+      </td>
     </tr>
     {% endfor %}
   </table>

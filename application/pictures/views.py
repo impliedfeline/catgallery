@@ -19,9 +19,8 @@ def picture_show(picture_id):
     return render_template("pictures/show.html", picture =
             Picture.query.get(picture_id))
 
-@app.route("/data/<picture_id>")
-def send_image(picture_id):
-    filename = str(picture_id)
+@app.route("/data/<filename>")
+def send_image(filename):
     mimetype = get_mimetype(filename)
     return send_from_directory(directory=app.config["UPLOAD_DIRECTORY"],
             filename=filename,
@@ -53,6 +52,7 @@ def handle_file(file, picture_id):
     file.save(app.config["UPLOAD_DIRECTORY"].joinpath(filename))
     generate_thumbnail(filename)
 
+# TODO: Fails if image is too small
 def generate_thumbnail(filename):
     with open(app.config["UPLOAD_DIRECTORY"].joinpath(filename), "rb") as file:
         format = imghdr.what(file)
