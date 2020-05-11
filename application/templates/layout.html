@@ -2,10 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Kissagalleria</title>
+    <title>kissagalleria</title>
   </head>
 
   <body>
+		<ul>
+			<li><a href="{{ url_for('pictures_index') }}">List pictures</a></li>
+			<li><a href="{{ url_for('pictures_form') }}">Add a picture</a></li>
+		</ul>
     {% block body %}
       <p>
         Content.

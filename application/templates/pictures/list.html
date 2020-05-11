@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <table>
+    <tr>
+      <th>Picture</th>
+    </tr>
+    {% for picture in pictures %}
+    <tr>
+      <td>{{ picture.id }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

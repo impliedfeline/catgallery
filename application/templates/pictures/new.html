@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+  
+{% block body %}
+<form method="POST" action="{{ url_for('pictures_create') }}"
+  enctype="multipart/form-data">
+  <input type="file" name="file"/>
+  <input type="submit" value="Upload"/>
+</form>
+{% endblock %}
