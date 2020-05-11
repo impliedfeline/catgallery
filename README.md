@@ -2,4 +2,4 @@
 
 Galleria kissojen kuvion katseluun.
 
-[Tietokantakaavio](docs/kaavio.png)
+[Tietokantakaavio](documentation/kaavio.png)
