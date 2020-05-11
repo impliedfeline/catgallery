@@ -3,11 +3,11 @@
 {% block body %}
   <table>
     <tr>
-      <th>Picture</th>
+      <th>Pictures</th>
     </tr>
     {% for picture in pictures %}
     <tr>
-      <td>{{ picture.id }}</td>
+      <td><a href="{{ url_for('picture_show', picture_id=picture.id) }}">{{ picture.id }}</a></td>
     </tr>
     {% endfor %}
   </table>
