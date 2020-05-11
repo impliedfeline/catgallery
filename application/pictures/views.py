@@ -2,6 +2,7 @@ from application import app, db
 from flask import flash, redirect, render_template, request, url_for, send_from_directory
 from application.pictures.models import Picture
 from pathlib import Path
+from PIL import Image
 
 import imghdr
 
@@ -42,10 +43,22 @@ def pictures_create():
 
         db.session().add(p)
         db.session().flush()
-        file.save(app.config["UPLOAD_DIRECTORY"].joinpath(str(p.id)))
+        handle_file(file, p.id)
         db.session().commit()
 
         return redirect(url_for("pictures_index"))
+
+def handle_file(file, picture_id):
+    filename = str(picture_id)
+    file.save(app.config["UPLOAD_DIRECTORY"].joinpath(filename))
+    generate_thumbnail(filename)
+
+def generate_thumbnail(filename):
+    with open(app.config["UPLOAD_DIRECTORY"].joinpath(filename), "rb") as file:
+        format = imghdr.what(file)
+        im = Image.open(file)
+        im.thumbnail(app.config["THUMBNAIL_DIMENSIONS"])
+        im.save(app.config["UPLOAD_DIRECTORY"].joinpath(filename + ".thumb"), format)
 
 def allowed_file(file):
     return imghdr.what(file) in app.config["ALLOWED_EXTENSIONS"]

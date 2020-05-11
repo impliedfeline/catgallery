@@ -6,6 +6,7 @@ data = Path(__file__).resolve().parent.parent.joinpath("data")
 data.mkdir(exist_ok=True)
 app.config["UPLOAD_DIRECTORY"] = data
 app.config["ALLOWED_EXTENSIONS"] = {"png", "jpg", "jpeg"}
+app.config["THUMBNAIL_DIMENSIONS"] = 150, 150
 
 from flask_sqlalchemy import SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pictures.db"
