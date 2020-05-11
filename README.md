@@ -1,5 +1,5 @@
-# Kissagalleria
+# catgallery
 
-Galleria kissojen kuvion katseluun.
+A gallery for submitting and viewing images of cats
 
-[Tietokantakaavio](documentation/kaavio.png)
+[Database diagram](documentation/diagram.png)
