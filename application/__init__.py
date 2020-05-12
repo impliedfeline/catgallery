@@ -12,8 +12,14 @@ app.config["THUMBNAIL_DIMENSIONS"] = 150, 150
 
 # database settings
 from flask_sqlalchemy import SQLAlchemy
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pictures.db"
-app.config["SQLALCHEMY_ECHO"] = True
+from os import environ
+
+if environ.get("HEROKU"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pictures.db"
+    app.config["SQLALCHEMY_ECHO"] = True
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -44,4 +50,7 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 # creation of tables
-db.create_all()
+try:
+    db.create_all()
+except:
+    pass
