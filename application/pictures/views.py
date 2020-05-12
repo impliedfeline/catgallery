@@ -1,8 +1,10 @@
-from application import app, db
 from flask import flash, redirect, render_template, request, url_for, send_from_directory
+from flask_login import login_required
+
 from pathlib import Path
 from PIL import Image
 
+from application import app, db
 from application.pictures.models import Picture
 from application.pictures.forms import PictureForm
 
@@ -11,6 +13,7 @@ def pictures_index():
     return render_template("pictures/list.html", pictures = Picture.query.all())
 
 @app.route("/pictures/new/")
+@login_required
 def pictures_form():
     return render_template("pictures/new.html", form = PictureForm())
 
@@ -27,6 +30,7 @@ def send_image(filename):
             mimetype=mimetype)
 
 @app.route("/pictures/", methods=["POST"])
+@login_required
 def pictures_create():
     form = PictureForm()
 
