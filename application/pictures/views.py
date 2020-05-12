@@ -1,10 +1,10 @@
 from application import app, db
 from flask import flash, redirect, render_template, request, url_for, send_from_directory
-from application.pictures.models import Picture
 from pathlib import Path
 from PIL import Image
 
-import imghdr
+from application.pictures.models import Picture
+from application.pictures.forms import PictureForm
 
 @app.route("/pictures/", methods=["GET"])
 def pictures_index():
@@ -12,7 +12,7 @@ def pictures_index():
 
 @app.route("/pictures/new/")
 def pictures_form():
-    return render_template("pictures/new.html")
+    return render_template("pictures/new.html", form = PictureForm())
 
 @app.route("/pictures/<picture_id>/", methods=["GET"])
 def picture_show(picture_id):
@@ -28,44 +28,36 @@ def send_image(filename):
 
 @app.route("/pictures/", methods=["POST"])
 def pictures_create():
-    if "file" not in request.files:
-        flash("No file part")
-        return redirect(request.url)
+    form = PictureForm()
 
-    file = request.files["file"]
-    if file.filename == "":
-        flash("No selected file")
-        return redirect(request.url)
+    if not form.validate():
+        return render_template("pictures/new.html", form = form)
 
-    if file and allowed_file(file):
-        p = Picture()
+    p = Picture()
 
-        db.session().add(p)
-        db.session().flush()
-        handle_file(file, p.id)
-        db.session().commit()
+    db.session().add(p)
+    db.session().flush()
+    handle_file(form.file.data, p.id)
+    db.session().commit()
 
-        return redirect(url_for("pictures_index"))
+    return redirect(url_for("pictures_index"))
 
 def handle_file(file, picture_id):
     filename = str(picture_id)
     file.save(app.config["UPLOAD_DIRECTORY"].joinpath(filename))
     generate_thumbnail(filename)
 
-# TODO: Fails if image is too small
 def generate_thumbnail(filename):
-    with open(app.config["UPLOAD_DIRECTORY"].joinpath(filename), "rb") as file:
-        format = imghdr.what(file)
-        im = Image.open(file)
-        im.thumbnail(app.config["THUMBNAIL_DIMENSIONS"])
-        im.save(app.config["UPLOAD_DIRECTORY"].joinpath(filename + ".thumb"), format)
+    with open_image(filename) as image:
+        filetype = image.format
+        image.thumbnail((150, 150))
+        image.save(app.config["UPLOAD_DIRECTORY"].joinpath(filename + ".thumb"),
+                filetype)
 
-def allowed_file(file):
-    return imghdr.what(file) in app.config["ALLOWED_EXTENSIONS"]
-
-# Assumes file behind 'filename' is in a recognizable image format, which should
-# be guaranteed by the use of 'allowed_file' in the upload process
 def get_mimetype(filename):
-    with open(app.config["UPLOAD_DIRECTORY"].joinpath(filename), "rb") as file:
-        return "image/" + imghdr.what(file)
+    with open_image(filename) as image:
+        return Image.MIME[image.format]
+
+def open_image(filename):
+    return Image.open(app.config["UPLOAD_DIRECTORY"].joinpath(filename))
 
