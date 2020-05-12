@@ -1,5 +1,5 @@
 from flask import flash, redirect, render_template, request, url_for, send_from_directory
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from pathlib import Path
 from PIL import Image
@@ -38,6 +38,7 @@ def pictures_create():
         return render_template("pictures/new.html", form = form)
 
     p = Picture()
+    p.account_id = current_user.id
 
     db.session().add(p)
     db.session().flush()
